@@ -1,7 +1,7 @@
----
 # 📚 BookBazar Web Application
 
 BookBazar is a web application where users can browse, buy, and manage books. Built with ASP.NET Core MVC, it features a clean, user-friendly interface, integrated shopping cart, and secure authentication. The app demonstrates modern web development best practices and scalable architecture for online marketplaces.
+
 ---
 
 ## 🚀 Features
