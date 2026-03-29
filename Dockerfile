@@ -1,0 +1,18 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
+
+COPY *.sln .
+COPY BookBazar.Web/*.csproj ./BookBazar.Web/
+RUN dotnet restore
+
+COPY . .
+WORKDIR /app/BookBazar.Web
+RUN dotnet publish -c Release -o /out
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /out .
+
+ENTRYPOINT ["dotnet", "BookBazar.Web.dll"]
