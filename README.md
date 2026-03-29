@@ -108,6 +108,75 @@ Then open:
 ```
 https://localhost:xxxx
 ```
+---
+
+# 📦 Run Project Using Docker
+
+## 🚀 Start the Application
+
+From the project root (where `docker-compose.yml` exists):
+
+```bash id="docker1"
+docker-compose up -d --build
+```
+
+---
+
+## 🌐 Access the Application
+
+Open your browser:
+
+```text id="docker2"
+http://localhost:5000
+```
+
+---
+
+## 🗄️ Run Database Migrations (First Time Only)
+
+```bash id="docker3"
+docker run -it --rm \
+  --network bookbazaraspnetmvc_default \
+  -v $(pwd):/app \
+  -w /app/BookBazar.Web \
+  mcr.microsoft.com/dotnet/sdk:10.0 \
+  bash -c "dotnet restore && \
+           dotnet tool install --global dotnet-ef && \
+           export PATH=$PATH:/root/.dotnet/tools && \
+           dotnet ef database update"
+```
+
+---
+
+## 🔄 Restart the Application
+
+```bash id="docker4"
+docker-compose up -d
+```
+
+---
+
+## 🛑 Stop the Application
+
+```bash id="docker5"
+docker-compose down
+```
+
+---
+
+## 🧹 Clean Everything (Reset Docker)
+
+```bash id="docker6"
+docker system prune -a --volumes -f
+```
+
+---
+
+## ⚠️ Notes
+
+* Make sure Docker Desktop is running before executing commands
+* If using Apple Silicon (M1/M2/M3), you may see a platform warning — this is normal
+* Database runs inside Docker (`bookbazar_db` container)
 
 ## 🔒 Validation
 
