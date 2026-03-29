@@ -178,6 +178,79 @@ docker system prune -a --volumes -f
 * If using Apple Silicon (M1/M2/M3), you may see a platform warning — this is normal
 * Database runs inside Docker (`bookbazar_db` container)
 
+---
+
+# 📦 Run Project Using Docker (SQL Server Only) + Local App
+
+## 🐳 Run SQL Server in Docker
+
+```bash
+docker run -d \
+  --name bookbazar_sql \
+  -e "ACCEPT_EULA=Y" \
+  -e "SA_PASSWORD=YourStrong!Passw0rd" \
+  -p 1433:1433 \
+  mcr.microsoft.com/mssql/server:2022-latest
+```
+
+---
+
+## ⚙️ Update Connection String
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost,1433;Database=BookBazarDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
+}
+```
+
+---
+
+## ▶️ Run Application Locally
+
+```bash
+dotnet run
+```
+
+---
+
+## 🗄️ Run Database Migrations (First Time Only)
+
+```bash
+dotnet ef database update
+```
+
+---
+
+## 🔄 Start SQL Server Container
+
+```bash
+docker start bookbazar_sql
+```
+
+---
+
+## 🛑 Stop SQL Server Container
+
+```bash
+docker stop bookbazar_sql
+```
+
+---
+
+## ❌ Remove SQL Server Container
+
+```bash
+docker rm -f bookbazar_sql
+```
+
+---
+
+## 🌐 Access Application
+
+```text
+http://localhost:5000
+```
+
 ## 🔒 Validation
 
 - Data annotations for model validation
