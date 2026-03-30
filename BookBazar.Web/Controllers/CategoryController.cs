@@ -30,6 +30,7 @@ namespace BookBazar.Web.Controllers
             {
                 _db.Categories.Add(category);
                 _db.SaveChanges();
+                TempData["success"] = "Category Created Successfully.";
                 return RedirectToAction("Index");
             }
             return View();
@@ -58,6 +59,7 @@ namespace BookBazar.Web.Controllers
             {
                 _db.Categories.Update(category);
                 _db.SaveChanges();
+                TempData["success"] = "Category Updated Successfully.";
                 return RedirectToAction("Index");
             }
             return View();
@@ -88,6 +90,7 @@ namespace BookBazar.Web.Controllers
 
             _db.Categories.Remove(categoryObj);
             _db.SaveChanges();
+            TempData["success"] = "Category Deleted Successfully.";
             return RedirectToAction("Index");
         }
     }
