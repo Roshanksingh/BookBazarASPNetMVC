@@ -1,50 +1,55 @@
 # 📚 BookBazar Web Application
 
-BookBazar is a web application where users can browse, buy, and manage books. Built with ASP.NET Core MVC, it features a clean, user-friendly interface, integrated shopping cart, and secure authentication. The app demonstrates modern web development best practices and scalable architecture for online marketplaces.
+BookBazar is a web application where users can browse, buy, and manage books. Built with ASP.NET Core MVC, it features a clean, user-friendly interface, integrated shopping cart, and scalable layered architecture.
 
 ---
 
 ## 🚀 Features
 
-- Full CRUD operations across modules
-- Browse and manage books
-- Shopping cart functionality (planned / in progress)
-- Secure authentication & authorization (planned)
-- Server-side and client-side validation
-- Clean and responsive UI using Bootstrap
-- Entity Framework Core (Code First)
-- SQL
+- Full CRUD operations across modules  
+- Browse and manage books  
+- Shopping cart functionality (planned)  
+- Secure authentication & authorization (planned)  
+- Server-side and client-side validation  
+- Responsive UI using Bootstrap  
+- Entity Framework Core (Code First)  
+- SQL Server integration  
 
 ---
 
 ## 🛠️ Tech Stack
 
-- ASP.NET Core MVC (.NET 10)
-- Entity Framework Core
-- SQL Server
-- Bootstrap (UI)
-- Razor Views
+- ASP.NET Core MVC (.NET 10)  
+- Entity Framework Core  
+- SQL Server  
+- Bootstrap  
+- Razor Views  
 
 ---
 
 ## 📁 Project Structure
 
-```
-BookBazar.Web/
+```plaintext
+BOOKBAZARASPNETMVC/
 │
-├── Controllers/
-├── Models/
-├── Data/
-├── Views/
-│   ├── Shared/
-│   └── (Feature-based folders)
-├── Migrations/
-└── wwwroot/
-```
+├── BookBazar.DataAccess/   # DbContext, Repositories, Migrations
+├── BookBazar.Model/        # Entities / Domain Models
+├── BookBazar.Utility/      # Helpers, Constants, Configs
+├── BookBazar.Web/          # MVC Application (Startup Project)
+│
+├── .gitattributes
+├── .gitignore
+├── BookBazar.slnx
+├── docker-compose.yml
+├── Dockerfile
+└── README.md
+````
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Setup Instructions (First-Time User)
+
+---
 
 ### 1️⃣ Clone the Repository
 
@@ -55,11 +60,18 @@ cd BookBazarASPNetMVC
 
 ---
 
-### 2️⃣ Configure Database
+### 2️⃣ Restore Dependencies
+
+```bash
+dotnet restore
+dotnet build
+```
+
+---
+
+### 3️⃣ Configure Database
 
 #### ✅ Option A: Local SQL Server (Windows)
-
-Update `appsettings.json`:
 
 ```json
 "ConnectionStrings": {
@@ -69,133 +81,19 @@ Update `appsettings.json`:
 
 ---
 
-#### ✅ Option B: Docker SQL Server (Mac / Cross-platform)
+#### ✅ Option B: SQL Server in Docker (Recommended)
 
-Run SQL Server in Docker:
-
-```bash
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Your_password123" \
--p 1433:1433 --name sqlserver \
--d mcr.microsoft.com/mssql/server:2022-latest
-```
-
-Update `appsettings.json`:
-
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost,1433;Database=BookBazarDb;User Id=sa;Password=Your_password123;TrustServerCertificate=True"
-}
-```
-
----
-
-### 3️⃣ Apply Migrations
+Run SQL Server:
 
 ```bash
-dotnet ef database update
+docker run -d --name bookbazar_sql \
+-e "ACCEPT_EULA=Y" \
+-e "SA_PASSWORD=YourStrong!Passw0rd" \
+-p 1433:1433 \
+mcr.microsoft.com/mssql/server:2022-latest
 ```
 
----
-
-### 4️⃣ Run the Application
-
-```bash
-dotnet run
-```
-
-Then open:
-
-```
-https://localhost:xxxx
-```
----
-
-# 📦 Run Project Using Docker
-
-## 🚀 Start the Application
-
-From the project root (where `docker-compose.yml` exists):
-
-```bash id="docker1"
-docker-compose up -d --build
-```
-
----
-
-## 🌐 Access the Application
-
-Open your browser:
-
-```text id="docker2"
-http://localhost:5000
-```
-
----
-
-## 🗄️ Run Database Migrations (First Time Only)
-
-```bash id="docker3"
-docker run -it --rm \
-  --network bookbazaraspnetmvc_default \
-  -v $(pwd):/app \
-  -w /app/BookBazar.Web \
-  mcr.microsoft.com/dotnet/sdk:10.0 \
-  bash -c "dotnet restore && \
-           dotnet tool install --global dotnet-ef && \
-           export PATH=$PATH:/root/.dotnet/tools && \
-           dotnet ef database update"
-```
-
----
-
-## 🔄 Restart the Application
-
-```bash id="docker4"
-docker-compose up -d
-```
-
----
-
-## 🛑 Stop the Application
-
-```bash id="docker5"
-docker-compose down
-```
-
----
-
-## 🧹 Clean Everything (Reset Docker)
-
-```bash id="docker6"
-docker system prune -a --volumes -f
-```
-
----
-
-## ⚠️ Notes
-
-* Make sure Docker Desktop is running before executing commands
-* If using Apple Silicon (M1/M2/M3), you may see a platform warning — this is normal
-* Database runs inside Docker (`bookbazar_db` container)
-
----
-
-# 📦 Run Project Using Docker (SQL Server Only) + Local App
-
-## 🐳 Run SQL Server in Docker
-
-```bash
-docker run -d \
-  --name bookbazar_sql \
-  -e "ACCEPT_EULA=Y" \
-  -e "SA_PASSWORD=YourStrong!Passw0rd" \
-  -p 1433:1433 \
-  mcr.microsoft.com/mssql/server:2022-latest
-```
-
----
-
-## ⚙️ Update Connection String
+Update connection string:
 
 ```json
 "ConnectionStrings": {
@@ -205,42 +103,62 @@ docker run -d \
 
 ---
 
-## ▶️ Run Application Locally
+### 4️⃣ Run the Application (Migrations Auto-Apply)
 
 ```bash
-dotnet run
+dotnet run --project BookBazar.Web
+```
+
+👉 On first run:
+
+* Database will be created automatically
+* Migrations will be applied
+* Tables will be created
+
+---
+
+## 🗄️ Manual Migration Commands (If Needed)
+
+```bash
+dotnet ef migrations add InitialCreate \
+--project BookBazar.DataAccess \
+--startup-project BookBazar.Web
+```
+
+```bash
+dotnet ef database update \
+--project BookBazar.DataAccess \
+--startup-project BookBazar.Web
 ```
 
 ---
 
-## 🗄️ Run Database Migrations (First Time Only)
+## 🐳 Run Project Using Docker (Full Setup)
 
 ```bash
-dotnet ef database update
+docker-compose up -d --build
+```
+
+Access application:
+
+```text
+http://localhost:5000
 ```
 
 ---
 
-## 🔄 Start SQL Server Container
+## 🐳 Run Project Using Docker (SQL Only + Local App)
+
+### Start SQL Server
 
 ```bash
 docker start bookbazar_sql
 ```
 
----
-
-## 🛑 Stop SQL Server Container
+### Run Application
 
 ```bash
-docker stop bookbazar_sql
-```
-
----
-
-## ❌ Remove SQL Server Container
-
-```bash
-docker rm -f bookbazar_sql
+dotnet run --project BookBazar.Web
 ```
 
 ---
@@ -248,24 +166,50 @@ docker rm -f bookbazar_sql
 ## 🌐 Access Application
 
 ```text
-http://localhost:5000
+http://localhost:5211
 ```
 
-## 🔒 Validation
+---
 
-- Data annotations for model validation
-- Client-side validation using unobtrusive validation
-- Server-side validation using ModelState
+## 🛑 Docker Commands
+
+### Stop SQL Server
+
+```bash
+docker stop bookbazar_sql
+```
+
+### Remove SQL Server
+
+```bash
+docker rm -f bookbazar_sql
+```
+
+### Clean Docker (Optional)
+
+```bash
+docker system prune -a --volumes -f
+```
 
 ---
 
 ## 🧠 Key Concepts Used
 
-- MVC Architecture (Model-View-Controller)
-- Dependency Injection
-- Entity Framework Core (DbContext, Migrations)
-- Model Validation with Data Annotations
-- Razor Tag Helpers (`asp-for`, `asp-action`, etc.)
+* MVC Architecture
+* Dependency Injection
+* Entity Framework Core
+* Code First Migrations
+* Model Validation
+* Razor Views
+* Layered Architecture
+
+---
+
+## 🔒 Validation
+
+* Data Annotations
+* Client-side validation
+* Server-side validation using `ModelState`
 
 ---
 
@@ -277,10 +221,11 @@ http://localhost:5000
 
 ## ⭐ Future Improvements
 
-- Add authentication (Login/Register)
-- Add Book management (not just categories)
-- Use Repository Pattern / Service Layer
-- Add API version of the project
+* Authentication (Login/Register)
+* Role-based authorization
+* Repository & Service Layer
+* API support
+* Enhanced Book & Order management
 
 ---
 
