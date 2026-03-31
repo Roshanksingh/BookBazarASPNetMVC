@@ -1,4 +1,4 @@
-using BookBazar.Web.Data;
+using BookBazar.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
