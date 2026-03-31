@@ -152,7 +152,7 @@ http://localhost:5000
 ### Start SQL Server
 
 ```bash
-docker start bookbazar_sql
+docker-compose up -d sqlserver
 ```
 
 ### Run Application
