@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="BookBazar.DataAccess/BookBazar.DataAccess.csproj" Id="0e6fa34a-a88f-4039-99d2-b7af2a5eff39" />
+  <Project Path="BookBazar.Model/BookBazar.Models.csproj" Id="50b70fe0-84fb-430d-85b6-ec36dd974177" />
+  <Project Path="BookBazar.Utility/BookBazar.Utility.csproj" Id="7f85551c-484c-4f38-80f5-140a9ccf18fb" />
   <Project Path="BookBazar.Web/BookBazar.Web.csproj" />
 </Solution>
