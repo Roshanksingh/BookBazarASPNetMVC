@@ -16,5 +16,6 @@ services:
     depends_on:
       - sqlserver
     environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BookBazarDb;User=sa;Password=2026!Spring;TrustServerCertificate=True

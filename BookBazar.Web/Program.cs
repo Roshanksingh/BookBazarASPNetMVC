@@ -1,4 +1,6 @@
 using BookBazar.DataAccess.Data;
+using BookBazar.DataAccess.Repository;
+using BookBazar.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +14,12 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     )
 );
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
-// 👇 ADD THIS BLOCK HERE
+// Create a scoped service to access the DbContext and automatically apply any pending migrations at startup.
+// Ensures the database is created and kept in sync with the latest schema. Avoid in Production.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();

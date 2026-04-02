@@ -1,4 +1,5 @@
 ﻿using BookBazar.DataAccess.Data;
+using BookBazar.DataAccess.Repository.IRepository;
 using BookBazar.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,15 +7,15 @@ namespace BookBazar.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDBContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDBContext db)
+        public CategoryController(IUnitOfWork db)
         {
-            _db = db;
+            _unitOfWork = db;
         }
         public IActionResult Index()
         {
-            List<Category> categories = _db.Categories.ToList();
+            List<Category> categories = _unitOfWork.Category.GetAll().ToList();
             return View(categories);
         }
 
@@ -28,8 +29,8 @@ namespace BookBazar.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(category);
-                _db.SaveChanges();
+                _unitOfWork.Category.Add(category);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Created Successfully.";
                 return RedirectToAction("Index");
             }
@@ -40,8 +41,8 @@ namespace BookBazar.Web.Controllers
         {
             if (id == null || id == 0) { return NotFound(); }
 
-            //Category? categoryFromDb = _db.Categories.Find(id);
-            Category? categoryFromDb = _db.Categories.FirstOrDefault(u => u.Id == id);
+            //Category? categoryFromDb = _unitOfWork.Categories.Find(id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
             if (categoryFromDb == null)
             {
@@ -57,8 +58,8 @@ namespace BookBazar.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(category);
-                _db.SaveChanges();
+                _unitOfWork.Category.update(category);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Updated Successfully.";
                 return RedirectToAction("Index");
             }
@@ -70,8 +71,8 @@ namespace BookBazar.Web.Controllers
         {
             if (id == null || id == 0) { return NotFound(); }
 
-            //Category? categoryFromDb = _db.Categories.Find(id);
-            Category? categoryFromDb = _db.Categories.FirstOrDefault(u => u.Id == id);
+            //Category? categoryFromDb = _unitOfWork.Categories.Find(id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
             if (categoryFromDb == null)
             {
@@ -84,12 +85,12 @@ namespace BookBazar.Web.Controllers
         //[ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int? id)
         {
-            Category? categoryObj = _db.Categories.FirstOrDefault(c => c.Id == id);
+            Category? categoryObj = _unitOfWork.Category.Get(c => c.Id == id);
 
             if (categoryObj == null) { return NotFound(); }
 
-            _db.Categories.Remove(categoryObj);
-            _db.SaveChanges();
+            _unitOfWork.Category.Remove(categoryObj);
+            _unitOfWork.Save();
             TempData["success"] = "Category Deleted Successfully.";
             return RedirectToAction("Index");
         }
