@@ -1,10 +1,10 @@
-﻿using BookBazar.DataAccess.Data;
-using BookBazar.DataAccess.Repository.IRepository;
+﻿using BookBazar.DataAccess.Repository.IRepository;
 using BookBazar.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookBazar.Web.Controllers
+namespace BookBazar.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
