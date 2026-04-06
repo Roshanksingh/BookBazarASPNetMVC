@@ -1,49 +1,54 @@
 ﻿@model Category
 
-<div class="card shadow border-0 mt-4">
-    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Delete Category</h2>
-            </div>
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="page-header">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <h1 class="page-title">Delete Category</h1>
+            <p class="page-subtitle">Review the category information before removing it.</p>
+        </div>
+        <div>
+            <a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
         </div>
     </div>
-    <div class="card-body p-4">
+</div>
+
+<div class="surface-card">
+    <div class="section-header">
+        <h5 class="mb-0 fw-bold text-danger">Delete Confirmation</h5>
+    </div>
+
+    <div class="section-body">
         <form method="POST">
-            <input asp-for="Id" hidden/>
-            <div class="container mt-5">
-                <div class="card shadow-lg p-4">
-                    <h2 class="text-primary mb-3">Delete Category</h2>
-                    <hr />
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Name" class="form-label">Category Name</label>
-                            <input asp-for="Name" class="form-control" placeholder="Enter category name" disabled />
-                        </div>
+            <input asp-for="Id" hidden />
 
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="DisplayOrder" class="form-label">Display Order</label>
-                            <input asp-for="DisplayOrder" class="form-control" placeholder="Enter display order" disabled />
-                        </div>
-                    </div>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                    <div class="row mt-3">
-                        <div class="col-md-3">
-                            <button type="submit" id="submitBtn" class="btn btn-danger w-100">
-                                Delete
-                            </button>
-                        </div>
-
-                        <div class="col-md-3">
-                            <a asp-controller="Category" asp-action="Index"
-                                   class="btn btn-outline-secondary w-100">
-                                Back
-                            </a>
-                        </div>
-                    </div>
-
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">Category Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter category name" disabled />
                 </div>
+
+                <div class="col-md-6">
+                    <label asp-for="DisplayOrder" class="form-label">Display Order</label>
+                    <input asp-for="DisplayOrder" class="form-control" placeholder="Enter display order" disabled />
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" id="submitBtn" class="btn btn-danger">
+                    <i class="bi bi-trash-fill me-2"></i>Delete
+                </button>
+
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
             </div>
         </form>
     </div>

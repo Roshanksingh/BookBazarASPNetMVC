@@ -1,0 +1,112 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = "Book Details";
+
+    var discount = Model.ListPrice > 0
+        ? (int)(((Model.ListPrice - Model.Price) / Model.ListPrice) * 100)
+        : 0;
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Back to Books
+    </a>
+</div>
+
+<div class="surface-card overflow-hidden">
+    <div class="row g-0">
+        <!-- Left Side: Image -->
+        <div class="col-lg-5">
+            <div class="h-100 p-4 p-lg-5 d-flex align-items-center justify-content-center" style="background: #f8fafc;">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)"
+                     alt="@Model.Title"
+                     class="img-fluid rounded-4 shadow-sm border"
+                     style="max-height: 520px; width: 100%; object-fit: cover;" />
+            </div>
+        </div>
+
+        <!-- Right Side: Content -->
+        <div class="col-lg-7">
+            <div class="p-4 p-lg-5">
+                <div class="mb-3">
+                    <span class="soft-badge-neutral">
+                        <i class="bi bi-book me-2"></i>Book Details
+                    </span>
+                </div>
+
+                <h1 class="page-title mb-2">@Model.Title</h1>
+
+                <p class="book-author fs-6 mb-4">
+                    by <span class="fw-semibold text-dark">@Model.Author</span>
+                </p>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="surface-card-sm p-3 h-100">
+                            <div class="small text-muted mb-1">ISBN</div>
+                            <div class="fw-semibold text-dark">@Model.ISBN</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="surface-card-sm p-3 h-100">
+                            <div class="small text-muted mb-1">Category Id</div>
+                            <div class="fw-semibold text-dark">@Model.CategoryId</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="surface-card-sm p-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                        <span class="price-current fs-3">@Model.Price.ToString("C")</span>
+                        <span class="price-old fs-6">@Model.ListPrice.ToString("C")</span>
+
+                        @if (discount > 0)
+                        {
+                            <span class="soft-badge">
+                                <i class="bi bi-tag me-2"></i>@discount% OFF
+                            </span>
+                        }
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="small text-muted">Price for 1-50</div>
+                            <div class="fw-semibold">@Model.Price.ToString("C")</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="small text-muted">Price for 50+</div>
+                            <div class="fw-semibold">@Model.Price50.ToString("C")</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="small text-muted">Price for 100+</div>
+                            <div class="fw-semibold">@Model.Price100.ToString("C")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-3">Description</h5>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <div class="text-muted lh-lg">
+                            @Html.Raw(Model.Description.Replace("\r\n", "<br />").Replace("\n", "<br />"))
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No description available for this book.</p>
+                    }
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 pt-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Continue Browsing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

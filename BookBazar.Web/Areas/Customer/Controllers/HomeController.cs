@@ -32,5 +32,17 @@ namespace BookBazar.Web.Areas.Customer.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult Details(int productId)
+        {
+            Product? product = _unitOfWork.Product.Get(u => u.Id == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
     }
 }
