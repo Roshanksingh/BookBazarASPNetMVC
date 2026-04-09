@@ -1,10 +1,10 @@
-﻿@model Product
+﻿@model ShoppingCart
 
 @{
     ViewData["Title"] = "Book Details";
 
-    var discount = Model.ListPrice > 0
-        ? (int)(((Model.ListPrice - Model.Price) / Model.ListPrice) * 100)
+    var discount = Model.Product != null && Model.Product.ListPrice > 0
+        ? (int)(((Model.Product.ListPrice - Model.Product.Price) / Model.Product.ListPrice) * 100)
         : 0;
 }
 
@@ -16,51 +16,51 @@
 
 <div class="surface-card overflow-hidden">
     <div class="row g-0">
-        <!-- Left Side: Image -->
+
         <div class="col-lg-5">
             <div class="h-100 p-4 p-lg-5 d-flex align-items-center justify-content-center" style="background: #f8fafc;">
-                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)"
-                     alt="@Model.Title"
+                <img src="@(string.IsNullOrEmpty(Model.Product?.ImageUrl) ? "/images/no-image.png" : Model.Product.ImageUrl)"
+                     alt="@Model.Product?.Title"
                      class="img-fluid rounded-4 shadow-sm border"
                      style="max-height: 520px; width: 100%; object-fit: cover;" />
             </div>
         </div>
 
-        <!-- Right Side: Content -->
         <div class="col-lg-7">
             <div class="p-4 p-lg-5">
+
                 <div class="mb-3">
                     <span class="soft-badge-neutral">
                         <i class="bi bi-book me-2"></i>Book Details
                     </span>
                 </div>
 
-                <h1 class="page-title mb-2">@Model.Title</h1>
+                <h1 class="page-title mb-2">@Model.Product?.Title</h1>
 
                 <p class="book-author fs-6 mb-4">
-                    by <span class="fw-semibold text-dark">@Model.Author</span>
+                    by <span class="fw-semibold text-dark">@Model.Product?.Author</span>
                 </p>
 
                 <div class="row g-3 mb-4">
                     <div class="col-sm-6">
                         <div class="surface-card-sm p-3 h-100">
                             <div class="small text-muted mb-1">ISBN</div>
-                            <div class="fw-semibold text-dark">@Model.ISBN</div>
+                            <div class="fw-semibold text-dark">@Model.Product?.ISBN</div>
                         </div>
                     </div>
 
                     <div class="col-sm-6">
                         <div class="surface-card-sm p-3 h-100">
-                            <div class="small text-muted mb-1">Category Id</div>
-                            <div class="fw-semibold text-dark">@Model.CategoryId</div>
+                            <div class="small text-muted mb-1">Category</div>
+                            <div class="fw-semibold text-dark">@Model.Product?.Category?.Name</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="surface-card-sm p-4 mb-4">
                     <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
-                        <span class="price-current fs-3">@Model.Price.ToString("C")</span>
-                        <span class="price-old fs-6">@Model.ListPrice.ToString("C")</span>
+                        <span class="price-current fs-3">@Model.Product?.Price.ToString("C")</span>
+                        <span class="price-old fs-6">@Model.Product?.ListPrice.ToString("C")</span>
 
                         @if (discount > 0)
                         {
@@ -73,26 +73,47 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="small text-muted">Price for 1-50</div>
-                            <div class="fw-semibold">@Model.Price.ToString("C")</div>
+                            <div class="fw-semibold">@Model.Product?.Price.ToString("C")</div>
                         </div>
                         <div class="col-md-4">
                             <div class="small text-muted">Price for 50+</div>
-                            <div class="fw-semibold">@Model.Price50.ToString("C")</div>
+                            <div class="fw-semibold">@Model.Product?.Price50.ToString("C")</div>
                         </div>
                         <div class="col-md-4">
                             <div class="small text-muted">Price for 100+</div>
-                            <div class="fw-semibold">@Model.Price100.ToString("C")</div>
+                            <div class="fw-semibold">@Model.Product?.Price100.ToString("C")</div>
                         </div>
                     </div>
                 </div>
 
+                <form method="post">
+                    <input asp-for="ProductId" type="hidden" />
+                    <input asp-for="ApplicationUserId" type="hidden" />
+
+                    <div class="surface-card-sm p-4 mb-4">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-sm-4">
+                                <label asp-for="Count" class="form-label"></label>
+                                <input asp-for="Count" class="form-control text-center" min="1" value="1" />
+                                <span asp-validation-for="Count" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-sm-8">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="mb-4">
                     <h5 class="fw-bold mb-3">Description</h5>
 
-                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    @if (!string.IsNullOrWhiteSpace(Model.Product?.Description))
                     {
                         <div class="text-muted lh-lg">
-                            @Html.Raw(Model.Description.Replace("\r\n", "<br />").Replace("\n", "<br />"))
+                            @Html.Raw(Model.Product.Description.Replace("\r\n", "<br />").Replace("\n", "<br />"))
                         </div>
                     }
                     else
@@ -106,7 +127,12 @@
                         <i class="bi bi-arrow-left me-2"></i>Continue Browsing
                     </a>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

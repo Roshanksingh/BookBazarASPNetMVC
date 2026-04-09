@@ -1,0 +1,136 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+        <div class="page-header text-center text-lg-start">
+            <h1 class="page-title">Create Account</h1>
+            <p class="page-subtitle">Join BookBazar and start managing books with a clean and simple experience.</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-7">
+                <div class="surface-card h-100">
+                    <div class="section-header">
+                        <h5 class="mb-0 fw-bold">Register</h5>
+                    </div>
+
+                    <div class="section-body">
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label asp-for="Input.Email" class="form-label"></label>
+                                    <input asp-for="Input.Email"
+                                           class="form-control"
+                                           autocomplete="username"
+                                           aria-required="true"
+                                           placeholder="name@example.com" />
+                                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Password" class="form-label"></label>
+                                    <input asp-for="Input.Password"
+                                           class="form-control"
+                                           autocomplete="new-password"
+                                           aria-required="true"
+                                           placeholder="Enter password" />
+                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                                    <input asp-for="Input.ConfirmPassword"
+                                           class="form-control"
+                                           autocomplete="new-password"
+                                           aria-required="true"
+                                           placeholder="Confirm password" />
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="Input.Role" class="form-label"></label>
+                                    <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
+                                        <option disabled selected>Select Role</option>
+                                    </select>
+                                    <span asp-validation-for="Input.Role" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button id="registerSubmit" type="submit" class="btn btn-primary">
+                                    <i class="bi bi-person-plus me-2"></i>Register
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="surface-card h-100">
+                    <div class="section-header">
+                        <h5 class="mb-0 fw-bold">External Access</h5>
+                    </div>
+
+                    <div class="section-body">
+                        @{
+                            if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                            {
+                                <div class="empty-state text-start p-0">
+                                    <div class="soft-badge-neutral mb-3">
+                                        <i class="bi bi-info-circle me-2"></i>No External Providers
+                                    </div>
+
+                                    <p class="text-muted mb-0">
+                                        There are no external authentication services configured at the moment.
+                                    </p>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-3">
+                                    Use another service to create your account.
+                                </p>
+
+                                <form id="external-account"
+                                      asp-page="./ExternalLogin"
+                                      asp-route-returnUrl="@Model.ReturnUrl"
+                                      method="post">
+                                    <div class="d-flex flex-column gap-2">
+                                        @foreach (var provider in Model.ExternalLogins!)
+                                        {
+                                            <button type="submit"
+                                                    class="btn btn-outline-secondary w-100"
+                                                    name="provider"
+                                                    value="@provider.Name"
+                                                    title="Log in using your @provider.DisplayName account">
+                                                <i class="bi bi-box-arrow-in-right me-2"></i>@provider.DisplayName
+                                            </button>
+                                        }
+                                    </div>
+                                </form>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <span class="text-muted">Already have an account?</span>
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="fw-semibold text-decoration-none ms-1">
+                Sign in
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

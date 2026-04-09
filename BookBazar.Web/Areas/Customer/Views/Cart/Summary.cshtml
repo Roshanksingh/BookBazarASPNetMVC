@@ -1,0 +1,206 @@
+﻿@model ShoppingCartVM
+
+@{
+    ViewData["Title"] = "Summary";
+
+    var estimatedStart = DateTime.Today.AddDays(7);
+    var estimatedEnd = DateTime.Today.AddDays(15);
+}
+
+<div class="page-header">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
+        <div>
+            <h1 class="page-title">Checkout</h1>
+            <p class="page-subtitle">Enter your details and review your order before placing it.</p>
+        </div>
+        <div>
+            <span class="soft-badge-neutral">
+                <i class="bi bi-shield-check me-2"></i>Secure Checkout
+            </span>
+        </div>
+    </div>
+</div>
+
+<form method="post">
+    <div class="row g-4">
+
+        <!-- LEFT SIDE : CUSTOMER INFO -->
+        <div class="col-lg-7 order-2 order-lg-1">
+            <div class="surface-card overflow-hidden">
+                <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="mb-0 fw-bold">Billing & Shipping Information</h5>
+                    <span class="soft-badge-neutral">
+                        <i class="bi bi-truck me-2"></i>
+                        Estimated Arrival: @estimatedStart.ToString("MMM dd") - @estimatedEnd.ToString("MMM dd")
+                    </span>
+                </div>
+
+                <div class="section-body">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="OrderHeader.Name" class="form-label">Full Name</label>
+                            <input asp-for="OrderHeader.Name" class="form-control" placeholder="Enter full name" />
+                            <span asp-validation-for="OrderHeader.Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="OrderHeader.PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="OrderHeader.PhoneNumber" class="form-control" placeholder="Enter phone number" />
+                            <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="OrderHeader.StreetAddress" class="form-label">Street Address</label>
+                            <input asp-for="OrderHeader.StreetAddress" class="form-control" placeholder="Enter street address" />
+                            <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="OrderHeader.City" class="form-label">City</label>
+                            <input asp-for="OrderHeader.City" class="form-control" placeholder="Enter city" />
+                            <span asp-validation-for="OrderHeader.City" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="OrderHeader.State" class="form-label">State</label>
+                            <input asp-for="OrderHeader.State" class="form-control" placeholder="Enter state" />
+                            <span asp-validation-for="OrderHeader.State" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="OrderHeader.PostalCode" class="form-label">ZIP Code</label>
+                            <input asp-for="OrderHeader.PostalCode" class="form-control" placeholder="Enter ZIP code" />
+                            <span asp-validation-for="OrderHeader.PostalCode" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="surface-card-sm p-3 mt-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <span class="soft-badge-neutral">
+                                <i class="bi bi-info-circle me-2"></i>Delivery Info
+                            </span>
+                            <div class="small text-muted lh-lg">
+                                Orders are typically delivered between
+                                <span class="fw-semibold text-dark">@estimatedStart.ToString("MMMM dd, yyyy")</span>
+                                and
+                                <span class="fw-semibold text-dark">@estimatedEnd.ToString("MMMM dd, yyyy")</span>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row gap-2 justify-content-end mt-4">
+                        <a asp-area="Customer"
+                               asp-controller="Cart"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Cart
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-bag-check me-2"></i>Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE : ORDER SUMMARY -->
+        <div class="col-lg-5 order-1 order-lg-2">
+            <div class="surface-card overflow-hidden">
+                <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="mb-0 fw-bold">Order Summary</h5>
+                    <span class="soft-badge-neutral">
+                        <i class="bi bi-journal-text me-2"></i>@Model.ShoppingCartList.Count() Item(s)
+                    </span>
+                </div>
+
+                <div class="section-body">
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var details in Model.ShoppingCartList)
+                        {
+                            double unitPrice = 0;
+
+                            if (details.Count <= 50)
+                            {
+                                unitPrice = details.Product.Price;
+                            }
+                            else if (details.Count <= 100)
+                            {
+                                unitPrice = details.Product.Price50;
+                            }
+                            else
+                            {
+                                unitPrice = details.Product.Price100;
+                            }
+
+                            var lineTotal = unitPrice * details.Count;
+
+                            <div class="surface-card-sm p-3">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-3">
+                                        <img src="@(string.IsNullOrEmpty(details.Product.ImageUrl) ? "/images/no-image.png" : details.Product.ImageUrl)"
+                                             alt="@details.Product.Title"
+                                             class="img-fluid rounded-4 border"
+                                             style="height: 90px; width: 100%; object-fit: cover;" />
+                                    </div>
+
+                                    <div class="col-6">
+                                        <h6 class="mb-1 fw-bold text-dark">@details.Product.Title</h6>
+                                        <div class="small text-muted mb-1">by @details.Product.Author</div>
+                                        <div class="small text-muted">Qty: @details.Count</div>
+                                    </div>
+
+                                    <div class="col-3 text-end">
+                                        <div class="small text-muted mb-1">Total</div>
+                                        <div class="fw-semibold text-dark">@lineTotal.ToString("C")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Distinct Items</span>
+                        <span class="fw-semibold">@Model.ShoppingCartList.Count()</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Total Quantity</span>
+                        <span class="fw-semibold">@Model.TotalQuantity</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">@Model.OrderHeader.OrderTotal.ToString("C")</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Shipping</span>
+                        <span class="fw-semibold">Free</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="text-muted">Estimated Arrival</span>
+                        <span class="fw-semibold">@estimatedStart.ToString("MMM dd") - @estimatedEnd.ToString("MMM dd")</span>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold fs-5">Total</span>
+                        <span class="price-current fs-4">@Model.OrderHeader.OrderTotal.ToString("C")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

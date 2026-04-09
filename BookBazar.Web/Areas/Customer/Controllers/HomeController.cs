@@ -1,7 +1,9 @@
 using BookBazar.DataAccess.Repository.IRepository;
 using BookBazar.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BookBazar.Web.Areas.Customer.Controllers
 {
@@ -35,14 +37,51 @@ namespace BookBazar.Web.Areas.Customer.Controllers
 
         public IActionResult Details(int productId)
         {
-            Product? product = _unitOfWork.Product.Get(u => u.Id == productId);
+            Product? product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category");
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            ShoppingCart cart = new()
+            {
+                Product = product,
+                Count = 1,
+                ProductId = productId
+            };
+
+            return View(cart);
         }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart cart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity!;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            cart.ApplicationUserId = userId;
+
+            ShoppingCart? cartFromDB = _unitOfWork.ShoppingCart.Get(
+                u => u.ApplicationUserId == userId && u.ProductId == cart.ProductId
+            );
+
+            if (cartFromDB != null)
+            {
+                cartFromDB.Count += cart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFromDB);
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.Add(cart);
+            }
+
+            _unitOfWork.Save();
+
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

@@ -1,17 +1,29 @@
 ﻿using BookBazar.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookBazar.DataAccess.Data
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Product { get; set; }
 
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Self Help", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "Biography", DisplayOrder = 2 },
@@ -34,7 +46,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 14,
                     Price100 = 12,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/surrounded-by-idiots.jpg"
+                    ImageUrl = "/images/product/books/surrounded-by-idiots.jpg"
                 },
 
                 new Product
@@ -49,7 +61,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 16,
                     Price100 = 14,
                     CategoryId = 2,
-                    ImageUrl = "/images/products/books/becoming.jpg"
+                    ImageUrl = "/images/product/books/becoming.jpg"
                 },
 
                 new Product
@@ -64,7 +76,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 13,
                     Price100 = 11,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/ikigai.jpg"
+                    ImageUrl = "/images/product/books/ikigai.jpg"
                 },
 
                 new Product
@@ -79,7 +91,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 16,
                     Price100 = 14,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/atomic-habits.jpg"
+                    ImageUrl = "/images/product/books/atomic-habits.jpg"
                 },
 
                 new Product
@@ -94,7 +106,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 15,
                     Price100 = 13,
                     CategoryId = 3,
-                    ImageUrl = "/images/products/books/the-correspondent.jpg"
+                    ImageUrl = "/images/product/books/the-correspondent.jpg"
                 },
 
                 new Product
@@ -109,7 +121,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 14,
                     Price100 = 12,
                     CategoryId = 3,
-                    ImageUrl = "/images/products/books/theo-of-golden.jpg"
+                    ImageUrl = "/images/product/books/theo-of-golden.jpg"
                 },
 
                 new Product
@@ -124,7 +136,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 11,
                     Price100 = 9,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/believe-in-yourself.jpg"
+                    ImageUrl = "/images/product/books/believe-in-yourself.jpg"
                 },
 
                 new Product
@@ -139,7 +151,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 15,
                     Price100 = 13,
                     CategoryId = 4,
-                    ImageUrl = "/images/products/books/all-the-light-we-cannot-see.jpg"
+                    ImageUrl = "/images/product/books/all-the-light-we-cannot-see.jpg"
                 },
 
                 new Product
@@ -154,7 +166,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 14,
                     Price100 = 12,
                     CategoryId = 5,
-                    ImageUrl = "/images/products/books/a-flicker-in-the-dark.jpg"
+                    ImageUrl = "/images/product/books/a-flicker-in-the-dark.jpg"
                 },
 
                 new Product
@@ -169,7 +181,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 12,
                     Price100 = 10,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/you-become-what-you-think.jpg"
+                    ImageUrl = "/images/product/books/you-become-what-you-think.jpg"
                 },
 
                 new Product
@@ -184,7 +196,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 14,
                     Price100 = 12,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/the-psychology-of-money.jpg"
+                    ImageUrl = "/images/product/books/the-psychology-of-money.jpg"
                 },
 
                 new Product
@@ -199,7 +211,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 18,
                     Price100 = 16,
                     CategoryId = 6,
-                    ImageUrl = "/images/products/books/fourth-wing.jpg"
+                    ImageUrl = "/images/product/books/fourth-wing.jpg"
                 },
 
                 new Product
@@ -214,7 +226,7 @@ namespace BookBazar.DataAccess.Data
                     Price50 = 15,
                     Price100 = 13,
                     CategoryId = 1,
-                    ImageUrl = "/images/products/books/the-let-them-theory.jpg"
+                    ImageUrl = "/images/product/books/the-let-them-theory.jpg"
                 }
             );
         }

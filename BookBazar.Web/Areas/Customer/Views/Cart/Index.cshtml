@@ -1,0 +1,161 @@
+﻿@model ShoppingCartVM
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="page-header">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
+        <div>
+            <h1 class="page-title">Your Shopping Cart</h1>
+            <p class="page-subtitle">Review your selected books before checkout.</p>
+        </div>
+        <div>
+            <span class="soft-badge-neutral">
+                <i class="bi bi-cart3 me-2"></i>Cart Summary
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="surface-card overflow-hidden">
+            <div class="section-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Selected Books</h5>
+                    <span class="soft-badge-neutral">
+                        <i class="bi bi-journal-text me-2"></i>@Model.ShoppingCartList.Count() Item(s)
+                    </span>
+                </div>
+            </div>
+
+            <div class="section-body">
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var item in Model.ShoppingCartList)
+                    {
+                        var lineTotal = item.Price * item.Count;
+
+                        <div class="surface-card-sm p-3">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-2 col-sm-3">
+                                    <img src="@(string.IsNullOrEmpty(item.Product.ImageUrl) ? "/images/no-image.png" : item.Product.ImageUrl)"
+                                         class="img-fluid rounded-4 border"
+                                         style="height: 120px; width: 100%; object-fit: cover;" />
+                                </div>
+
+                                <div class="col-md-5 col-sm-9">
+                                    <h5 class="mb-1 fw-bold text-dark">@item.Product.Title</h5>
+                                    <p class="book-author mb-2">
+                                        by <span class="fw-semibold text-dark">@item.Product.Author</span>
+                                    </p>
+
+                                    <div class="d-flex gap-2 mb-2">
+                                        <span class="price-current">@item.Price.ToString("C")</span>
+                                        <span class="price-old">@item.Product.ListPrice.ToString("C")</span>
+                                    </div>
+
+                                    <div class="small text-muted">
+                                        @* Category: @item.Product.Category *@
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-6">
+                                    <label class="form-label mb-1">Quantity</label>
+
+                                    <div class="d-flex align-items-center justify-content-center gap-2 surface-card-sm p-2 rounded-4">
+                                        <a asp-action="Minus"
+                                               asp-route-cartId="@item.Id"
+                                               class="btn btn-sm btn-outline-secondary rounded-circle">
+                                            <i class="bi bi-dash"></i>
+                                        </a>
+
+                                        <span class="fw-semibold px-2">@item.Count</span>
+
+                                        <a asp-action="Plus"
+                                               asp-route-cartId="@item.Id"
+                                               class="btn btn-sm btn-outline-secondary rounded-circle">
+                                            <i class="bi bi-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-6 text-md-end">
+                                    <div class="small text-muted mb-1">Total</div>
+                                    <div class="price-current mb-3">@lineTotal.ToString("C")</div>
+
+                                    <div class="d-flex flex-column gap-2">
+                                        <a asp-area="Customer"
+                                               asp-controller="Home"
+                                               asp-action="Details"
+                                               asp-route-productId="@item.ProductId"
+                                               class="btn btn-outline-secondary">
+                                            <i class="bi bi-eye me-2"></i>View
+                                        </a>
+
+                                        <a asp-controller="Cart"
+                                               asp-action="Remove"
+                                               asp-route-cartId="@item.Id"
+                                               class="btn btn-outline-secondary">
+                                            <i class="bi bi-trash me-2"></i>Remove
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="surface-card">
+            <div class="section-header">
+                <h5 class="mb-0 fw-bold">Order Summary</h5>
+            </div>
+
+            <div class="section-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Items</span>
+                    <span class="fw-semibold">@Model.ShoppingCartList.Count()</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Total Quantity</span>
+                    <span class="fw-semibold">@Model.TotalQuantity</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Subtotal</span>
+                    <span class="fw-semibold">@Model.OrderHeader.OrderTotal.ToString("C")</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="text-muted">Shipping</span>
+                    <span class="fw-semibold">Free</span>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold fs-5">Total</span>
+                    <span class="price-current fs-4">@Model.OrderHeader.OrderTotal.ToString("C")</span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a asp-area="Customer" asp-controller="Cart" asp-action="Summary" class="btn btn-primary">
+                        <i class="bi bi-bag-check me-2"></i>Checkout
+                    </a>
+
+                    <a asp-area="Customer"
+                           asp-controller="Home"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Continue Browsing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
