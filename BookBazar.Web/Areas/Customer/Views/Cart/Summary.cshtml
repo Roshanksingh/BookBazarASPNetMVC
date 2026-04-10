@@ -22,6 +22,7 @@
 </div>
 
 <form method="post">
+    @Html.AntiForgeryToken()
     <div class="row g-4">
 
         <!-- LEFT SIDE : CUSTOMER INFO -->
@@ -40,39 +41,64 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label asp-for="OrderHeader.Name" class="form-label">Full Name</label>
-                            <input asp-for="OrderHeader.Name" class="form-control" placeholder="Enter full name" />
-                            <span asp-validation-for="OrderHeader.Name" class="text-danger small"></span>
+                            <!-- CHANGED: asp-for and asp-validation-for now point to OrderInput.Name -->
+                            <!-- value= pre-fills from the DB data the controller loaded -->
+                            <label asp-for="OrderInput.Name" class="form-label">Full Name</label>
+                            <input asp-for="OrderInput.Name"
+                                   value="@Model.OrderHeader.Name"
+                                   class="form-control"
+                                   placeholder="Enter full name" />
+                            <span asp-validation-for="OrderInput.Name" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="OrderHeader.PhoneNumber" class="form-label">Phone Number</label>
-                            <input asp-for="OrderHeader.PhoneNumber" class="form-control" placeholder="Enter phone number" />
-                            <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger small"></span>
+                            <!-- CHANGED -->
+                            <label asp-for="OrderInput.PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="OrderInput.PhoneNumber"
+                                   value="@Model.OrderHeader.PhoneNumber"
+                                   class="form-control"
+                                   placeholder="Enter phone number" />
+                            <span asp-validation-for="OrderInput.PhoneNumber" class="text-danger small"></span>
                         </div>
 
                         <div class="col-12">
-                            <label asp-for="OrderHeader.StreetAddress" class="form-label">Street Address</label>
-                            <input asp-for="OrderHeader.StreetAddress" class="form-control" placeholder="Enter street address" />
-                            <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger small"></span>
+                            <!-- CHANGED -->
+                            <label asp-for="OrderInput.StreetAddress" class="form-label">Street Address</label>
+                            <input asp-for="OrderInput.StreetAddress"
+                                   value="@Model.OrderHeader.StreetAddress"
+                                   class="form-control"
+                                   placeholder="Enter street address" />
+                            <span asp-validation-for="OrderInput.StreetAddress" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-4">
-                            <label asp-for="OrderHeader.City" class="form-label">City</label>
-                            <input asp-for="OrderHeader.City" class="form-control" placeholder="Enter city" />
-                            <span asp-validation-for="OrderHeader.City" class="text-danger small"></span>
+                            <!-- CHANGED -->
+                            <label asp-for="OrderInput.City" class="form-label">City</label>
+                            <input asp-for="OrderInput.City"
+                                   value="@Model.OrderHeader.City"
+                                   class="form-control"
+                                   placeholder="Enter city" />
+                            <span asp-validation-for="OrderInput.City" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-4">
-                            <label asp-for="OrderHeader.State" class="form-label">State</label>
-                            <input asp-for="OrderHeader.State" class="form-control" placeholder="Enter state" />
-                            <span asp-validation-for="OrderHeader.State" class="text-danger small"></span>
+                            <!-- CHANGED -->
+                            <label asp-for="OrderInput.State" class="form-label">State</label>
+                            <input asp-for="OrderInput.State"
+                                   value="@Model.OrderHeader.State"
+                                   class="form-control"
+                                   placeholder="Enter state" />
+                            <span asp-validation-for="OrderInput.State" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-4">
-                            <label asp-for="OrderHeader.PostalCode" class="form-label">ZIP Code</label>
-                            <input asp-for="OrderHeader.PostalCode" class="form-control" placeholder="Enter ZIP code" />
-                            <span asp-validation-for="OrderHeader.PostalCode" class="text-danger small"></span>
+                            <!-- CHANGED -->
+                            <label asp-for="OrderInput.PostalCode" class="form-label">ZIP Code</label>
+                            <input asp-for="OrderInput.PostalCode"
+                                   value="@Model.OrderHeader.PostalCode"
+                                   class="form-control"
+                                   placeholder="Enter ZIP code" />
+                            <span asp-validation-for="OrderInput.PostalCode" class="text-danger small"></span>
                         </div>
                     </div>
 
@@ -106,7 +132,7 @@
             </div>
         </div>
 
-        <!-- RIGHT SIDE : ORDER SUMMARY -->
+        <!-- RIGHT SIDE : ORDER SUMMARY — completely unchanged -->
         <div class="col-lg-5 order-1 order-lg-2">
             <div class="surface-card overflow-hidden">
                 <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-2">

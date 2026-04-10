@@ -366,3 +366,17 @@ bin/
 obj/
 .vs/
 wwwroot/lib/
+appsettings.Development.json
+secrets.json
+
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/*.user
+**/*.suo
+.git
+.gitignore
+Dockerfile*
+docker-compose*
+README.md

@@ -28,6 +28,7 @@ namespace BookBazar.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
             if (ModelState.IsValid)
@@ -57,6 +58,7 @@ namespace BookBazar.Web.Areas.Admin.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(Category category)
         {
             if (ModelState.IsValid)
@@ -85,7 +87,7 @@ namespace BookBazar.Web.Areas.Admin.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int? id)
         {
             Category? categoryObj = _unitOfWork.Category.Get(c => c.Id == id);

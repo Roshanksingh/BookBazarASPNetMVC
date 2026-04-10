@@ -56,6 +56,7 @@ namespace BookBazar.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductVM productVM, IFormFile? file)
         {
             if (ModelState.IsValid)
@@ -64,16 +65,29 @@ namespace BookBazar.Web.Areas.Admin.Controllers
 
                 if (file != null)
                 {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+                    var allowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp", "image/gif" };
+                    var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                    if (!allowedExtensions.Contains(fileExtension) || !allowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
+                    {
+                        ModelState.AddModelError("file", "Only image files (jpg, png, webp, gif) are allowed.");
+                        productVM.CategoryList = _unitOfWork.Category.GetAll().Select(c => new SelectListItem
+                        {
+                            Text = c.Name,
+                            Value = c.Id.ToString()
+                        });
+                        return View(productVM);
+                    }
+
+                    string fileName = Guid.NewGuid().ToString() + fileExtension;
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
                     if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
                     {
                         var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
-                        {
                             System.IO.File.Delete(oldImagePath);
-                        }
                     }
 
                     using (var filestream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
@@ -105,35 +119,9 @@ namespace BookBazar.Web.Areas.Admin.Controllers
                     Text = c.Name,
                     Value = c.Id.ToString()
                 });
-
                 return View(productVM);
             }
         }
-
-        //public IActionResult Delete(int id)
-        //{
-        //    Product? productFromDb = _unitOfWork.Product.Get(Product => Product.Id == id);
-        //    if (productFromDb == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(productFromDb);
-        //}
-
-        //[HttpPost, ActionName("Delete")]
-        //public IActionResult DeleteProduct(int id)
-        //{
-        //    Product? productFromDb = _unitOfWork.Product.Get(product => product.Id == id);
-        //    if (productFromDb == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _unitOfWork.Product.Remove(productFromDb);
-        //    _unitOfWork.Save();
-        //    TempData["success"] = "Product Deleted Successfully.";
-        //    return RedirectToAction("Index");
-        //}
 
         #region API CALLS
         [HttpGet]
@@ -145,6 +133,7 @@ namespace BookBazar.Web.Areas.Admin.Controllers
         #endregion
 
         [HttpDelete]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             Product? productToBeDeleted = _unitOfWork.Product.Get(u => u.Id == id);

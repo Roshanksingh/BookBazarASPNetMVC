@@ -20,6 +20,7 @@
 </div>
 
 <form method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
     <input asp-for="Product.Id" type="hidden" />
     <input asp-for="Product.ImageUrl" type="hidden" />
 

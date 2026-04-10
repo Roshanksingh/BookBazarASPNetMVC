@@ -25,6 +25,7 @@
 
     <div class="section-body">
         <form method="POST" id="createForm">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
             <div class="row g-3">

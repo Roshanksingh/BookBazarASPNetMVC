@@ -87,6 +87,7 @@
                 </div>
 
                 <form method="post">
+                    @Html.AntiForgeryToken()
                     <input asp-for="ProductId" type="hidden" />
                     <input asp-for="ApplicationUserId" type="hidden" />
 

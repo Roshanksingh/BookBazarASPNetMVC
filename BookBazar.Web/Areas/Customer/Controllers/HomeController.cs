@@ -56,6 +56,7 @@ namespace BookBazar.Web.Areas.Customer.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public IActionResult Details(ShoppingCart cart)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity!;
@@ -77,9 +78,6 @@ namespace BookBazar.Web.Areas.Customer.Controllers
             }
 
             _unitOfWork.Save();
-
-            _unitOfWork.Save();
-
             return RedirectToAction(nameof(Index));
         }
 

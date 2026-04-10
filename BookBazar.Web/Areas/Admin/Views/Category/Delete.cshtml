@@ -25,6 +25,7 @@
 
     <div class="section-body">
         <form method="POST">
+            @Html.AntiForgeryToken()
             <input asp-for="Id" hidden />
 
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
