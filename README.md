@@ -1,234 +1,172 @@
-# 📚 BookBazar Web Application
+# 📘 BookBazar ASP.NET MVC Application
 
-BookBazar is a web application where users can browse, buy, and manage books. Built with ASP.NET Core MVC, it features a clean, user-friendly interface, integrated shopping cart, and scalable layered architecture.
-
----
-
-## 🚀 Features
-
-- Full CRUD operations across modules  
-- Browse and manage books  
-- Shopping cart functionality (planned)  
-- Secure authentication & authorization (planned)  
-- Server-side and client-side validation  
-- Responsive UI using Bootstrap  
-- Entity Framework Core (Code First)  
-- SQL Server integration  
+BookBazar is an ASP.NET Core MVC web application using Entity Framework Core, SQL Server, and ASP.NET Identity.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠 Prerequisites
 
-- ASP.NET Core MVC (.NET 10)  
-- Entity Framework Core  
-- SQL Server  
-- Bootstrap  
-- Razor Views  
+Ensure the following are installed:
 
----
-
-## 📁 Project Structure
-
-```plaintext
-BOOKBAZARASPNETMVC/
-│
-├── BookBazar.DataAccess/   # DbContext, Repositories, Migrations
-├── BookBazar.Model/        # Entities / Domain Models
-├── BookBazar.Utility/      # Helpers, Constants, Configs
-├── BookBazar.Web/          # MVC Application (Startup Project)
-│
-├── .gitattributes
-├── .gitignore
-├── BookBazar.slnx
-├── docker-compose.yml
-├── Dockerfile
-└── README.md
-````
+- .NET SDK (same version as project)
+- Docker (for containerized setup)
+- SQL Server (only if running locally without Docker)
 
 ---
 
-## ⚙️ Setup Instructions (First-Time User)
+## 🚀 Running the Application
+
+You can run the application in two ways:
 
 ---
 
-### 1️⃣ Clone the Repository
+# 1️⃣ Run Locally (Using .NET CLI + User Secrets)
+
+### Step 1: Configure User Secrets
+
+Navigate to the Web project:
 
 ```bash
-git clone https://github.com/Roshanksingh/BookBazarASPNetMVC.git
-cd BookBazarASPNetMVC
+cd BookBazar.Web
 ```
 
----
-
-### 2️⃣ Restore Dependencies
+Set required secrets:
 
 ```bash
-dotnet restore
-dotnet build
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost,1433;Database=BookBazarDb;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=True"
+
+dotnet user-secrets set "Stripe:PublishableKey" "pk_test_xxx"
+dotnet user-secrets set "Stripe:SecretKey" "sk_test_xxx"
+
+dotnet user-secrets set "SeedAdmin:Email" "admin@example.com"
+dotnet user-secrets set "SeedAdmin:Password" "StrongPassword!"
 ```
 
 ---
 
-### 3️⃣ Configure Database
+### Step 2: Start SQL Server
 
-#### ✅ Option A: Local SQL Server (Windows)
-
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost;Database=BookBazarDb;Trusted_Connection=True;TrustServerCertificate=True"
-}
-```
-
----
-
-#### ✅ Option B: SQL Server in Docker (Recommended)
-
-Run SQL Server:
+Using Docker:
 
 ```bash
-docker run -d --name bookbazar_sql \
--e "ACCEPT_EULA=Y" \
--e "SA_PASSWORD=YourStrong!Passw0rd" \
--p 1433:1433 \
-mcr.microsoft.com/mssql/server:2022-latest
-```
-
-Update connection string:
-
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost,1433;Database=BookBazarDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
-}
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrongPassword123!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
 ---
 
-### 4️⃣ Run the Application (Migrations Auto-Apply)
+### Step 3: Apply Migrations
+
+From solution root:
+
+```bash
+dotnet ef database update --project BookBazar.DataAccess --startup-project BookBazar.Web
+```
+
+---
+
+### Step 4: Run the Application
 
 ```bash
 dotnet run --project BookBazar.Web
 ```
 
-👉 On first run:
+Open in browser:
 
-* Database will be created automatically
-* Migrations will be applied
-* Tables will be created
-
----
-
-## 🗄️ Manual Migration Commands (If Needed)
-
-```bash
-dotnet ef migrations add InitialCreate \
---project BookBazar.DataAccess \
---startup-project BookBazar.Web
 ```
-
-```bash
-dotnet ef database update \
---project BookBazar.DataAccess \
---startup-project BookBazar.Web
-```
-
----
-
-## 🐳 Run Project Using Docker (Full Setup)
-
-```bash
-docker-compose up -d --build
-```
-
-Access application:
-
-```text
-http://localhost:5000
-```
-
----
-
-## 🐳 Run Project Using Docker (SQL Only + Local App)
-
-### Start SQL Server
-
-```bash
-docker-compose up -d sqlserver
-```
-
-### Run Application
-
-```bash
-dotnet run --project BookBazar.Web
-```
-
----
-
-## 🌐 Access Application
-
-```text
 http://localhost:5211
 ```
 
 ---
 
-## 🛑 Docker Commands
+# 2️⃣ Run Using Docker
 
-### Stop SQL Server
+### Step 1: Create `.env`
 
-```bash
-docker stop bookbazar_sql
-```
-
-### Remove SQL Server
+Copy the template:
 
 ```bash
-docker rm -f bookbazar_sql
+cp .env.example .env
 ```
 
-### Clean Docker (Optional)
+Update `.env`:
+
+```env
+SA_PASSWORD=YourStrongPassword123!
+
+APP_DB_CONNECTION=Server=sqlserver,1433;Database=BookBazarDb;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=True
+
+STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+STRIPE_SECRET_KEY=sk_test_xxx
+
+SEED_ADMIN_EMAIL=admin@example.com
+SEED_ADMIN_PASSWORD=StrongPassword!
+```
+
+---
+
+### Step 2: Run Containers
 
 ```bash
-docker system prune -a --volumes -f
+docker compose up --build
 ```
 
 ---
 
-## 🧠 Key Concepts Used
+### Step 3: Access Application
 
-* MVC Architecture
-* Dependency Injection
-* Entity Framework Core
-* Code First Migrations
-* Model Validation
-* Razor Views
-* Layered Architecture
+```
+http://localhost:8080
+```
 
 ---
 
-## 🔒 Validation
+## ⚙️ Behavior
 
-* Data Annotations
-* Client-side validation
-* Server-side validation using `ModelState`
-
----
-
-## 👨‍💻 Author
-
-**Roshan Kumar Singh**
+- Database is created automatically on startup
+- EF Core migrations run automatically (Docker mode)
+- Admin user is seeded using provided credentials
+- Email sending is disabled (no-op implementation)
 
 ---
 
-## ⭐ Future Improvements
+## 🛑 Troubleshooting
 
-* Authentication (Login/Register)
-* Role-based authorization
-* Repository & Service Layer
-* API support
-* Enhanced Book & Order management
+### `dotnet ef` not found
+
+```bash
+dotnet tool install --global dotnet-ef
+```
 
 ---
 
-## 📄 License
+### SQL connection issues
 
-This project is for learning purposes.
+- Ensure SQL Server is running
+- Verify password consistency between:
+  - `SA_PASSWORD`
+  - connection string
+
+---
+
+### Port already in use
+
+```bash
+dotnet run --project BookBazar.Web --urls "http://localhost:5005"
+```
+
+---
+
+## 📌 Notes
+
+- Do not commit `.env` file
+- Use strong passwords for SQL and admin user
+- For production, use environment variables or a secure secret manager
+
+---
+
+## ✅ Quick Commands
+
+| Mode   | Command                              |
+| ------ | ------------------------------------ |
+| Local  | `dotnet run --project BookBazar.Web` |
+| Docker | `docker compose up --build`          |
