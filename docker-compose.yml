@@ -16,7 +16,7 @@ services:
   bookbazar.web:
     build:
       context: .
-      dockerfile: BookBazar.Web/Dockerfile
+      dockerfile: ./Dockerfile
     container_name: bookbazar-web
     depends_on:
       - sqlserver

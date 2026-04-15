@@ -380,3 +380,4 @@ secrets.json
 Dockerfile*
 docker-compose*
 README.md
+.env

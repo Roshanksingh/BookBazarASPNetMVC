@@ -82,12 +82,6 @@ http://localhost:5211
 
 ### Step 1: Create `.env`
 
-Copy the template:
-
-```bash
-cp .env.example .env
-```
-
 Update `.env`:
 
 ```env

@@ -9,6 +9,13 @@ using Stripe;
 using BookBazar.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
+using System.Globalization;
+
+var culture = new CultureInfo("en-US"); // or "en-IN" if you want ₹
+
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
